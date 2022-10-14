@@ -1,8 +1,23 @@
 <template>
-  <h1>カレンダー{{ currentDate }}</h1>
-  <div v-for="(week, index) in calendars" :key="index" style="display: flex">
-    <div v-for="(day, index) in week" :key="index">
-      {{ day.date }}
+  <h3>カレンダー{{ currentDate }}</h3>
+  <div style="max-width: 700px; border-top: 1px solid #eeeeee">
+    <div
+      v-for="(week, index) in calendars"
+      :key="index"
+      style="display: flex; border-left: 1px solid #eeeeee"
+    >
+      <div
+        v-for="(day, index) in week"
+        :key="index"
+        style="
+          flex: 1;
+          min-height: 125px;
+          border-right: 1px solid #eeeeee;
+          border-bottom: 1px solid #eeeeee;
+        "
+      >
+        {{ day.date }}
+      </div>
     </div>
   </div>
 </template>
