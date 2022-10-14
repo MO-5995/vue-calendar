@@ -1,5 +1,10 @@
 <template>
-  <p>Hello World</p>
+  <h1>カレンダー{{ currentDate }}</h1>
+  <div v-for="(week, index) in calendars" :key="index" style="display: flex">
+    <div v-for="(day, index) in week" :key="index">
+      {{ day.date }}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -44,6 +49,11 @@ export default {
   },
   mounted() {
     console.log(this.getCalendar());
+  },
+  computed: {
+    calendars() {
+      return this.getCalendar();
+    },
   },
 };
 </script>
