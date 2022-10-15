@@ -9,8 +9,13 @@
       </div>
     </div>
     <div v-for="(week, index) in calendars" :key="index" class="calendar-week">
-      <div v-for="(day, index) in week" :key="index" class="calendar-day">
-        <p class="calendar-date">{{ day.date }}</p>
+      <div
+        :class="{ outside: currentMonth !== day.month }"
+        v-for="(day, index) in week"
+        :key="index"
+        class="calendar-day"
+      >
+        <p class="calendar-date">{{ day.day }}</p>
       </div>
     </div>
   </div>
@@ -43,13 +48,15 @@ export default {
       const weekNumber = Math.ceil(endDate.diff(startDate, "days") / 7);
 
       let calendars = [];
+      let calendarDate = this.getStartDate();
       for (let week = 0; week < weekNumber; week++) {
         let weekRow = [];
         for (let day = 0; day < 7; day++) {
           weekRow.push({
-            date: startDate.get("date"),
+            day: calendarDate.get("date"),
+            month: calendarDate.format("YYYY/MM"),
           });
-          startDate.add(1, "days");
+          calendarDate.add(1, "days");
         }
         calendars.push(weekRow);
       }
@@ -76,6 +83,9 @@ export default {
     displayDate() {
       return this.currentDate.format("YYYY/M");
     },
+    currentMonth() {
+      return this.currentDate.format("YYYY/MM");
+    },
   },
 };
 </script>
@@ -101,5 +111,8 @@ export default {
   flex: 1;
   border-right: 1px solid #eeeeee;
   text-align: center;
+}
+.outside {
+  background-color: #f7f7f7;
 }
 </style>
