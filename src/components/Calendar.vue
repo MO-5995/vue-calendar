@@ -1,5 +1,5 @@
 <template>
-  <h3>Calendar {{ currentDate }}</h3>
+  <h3>Calendar {{ displayDate }}</h3>
   <button @click="prevMonth">Prev Month</button>
   <button @click="nextMonth">Next Month</button>
   <div class="calendar-wrapper">
@@ -63,6 +63,9 @@ export default {
   computed: {
     calendars() {
       return this.getCalendar();
+    },
+    displayDate() {
+      return this.currentDate.format("YYYY/M");
     },
   },
 };
