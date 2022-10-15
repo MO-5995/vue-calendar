@@ -1,5 +1,7 @@
 <template>
-  <h3>カレンダー{{ currentDate }}</h3>
+  <h3>Calendar {{ currentDate }}</h3>
+  <button @click="prevMonth">Prev Month</button>
+  <button @click="nextMonth">Next Month</button>
   <div style="max-width: 700px; border-top: 1px solid #eeeeee">
     <div
       v-for="(week, index) in calendars"
@@ -60,6 +62,12 @@ export default {
         calendars.push(weekRow);
       }
       return calendars;
+    },
+    nextMonth() {
+      this.currentDate = moment(this.currentDate).add(1, "month");
+    },
+    prevMonth() {
+      this.currentDate = moment(this.currentDate).subtract(1, "month");
     },
   },
   mounted() {
