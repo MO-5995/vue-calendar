@@ -3,6 +3,11 @@
   <button @click="prevMonth">Prev Month</button>
   <button @click="nextMonth">Next Month</button>
   <div class="calendar-wrapper">
+    <div class="calendar-week">
+      <div class="calendar-weekOfDay" v-for="n in 7" :key="n">
+        {{ showDayOfWeek(n - 1) }}
+      </div>
+    </div>
     <div v-for="(week, index) in calendars" :key="index" class="calendar-week">
       <div v-for="(day, index) in week" :key="index" class="calendar-day">
         <p class="calendar-date">{{ day.date }}</p>
@@ -56,6 +61,10 @@ export default {
     prevMonth() {
       this.currentDate = moment(this.currentDate).subtract(1, "month");
     },
+    showDayOfWeek(dayIndex) {
+      const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      return week[dayIndex];
+    },
   },
   mounted() {
     console.log(this.getCalendar());
@@ -86,6 +95,11 @@ export default {
   border-bottom: 1px solid #eeeeee;
 }
 .calendar-date {
+  text-align: center;
+}
+.calendar-weekOfDay {
+  flex: 1;
+  border-right: 1px solid #eeeeee;
   text-align: center;
 }
 </style>
