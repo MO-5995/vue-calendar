@@ -16,6 +16,14 @@
         class="calendar-day"
       >
         <p class="calendar-date">{{ day.day }}</p>
+        <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
+          <div
+            class="calendar-event"
+            :style="`background-color:${dayEvent.color}`"
+          >
+            {{ dayEvent.name }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -27,6 +35,78 @@ export default {
   data() {
     return {
       currentDate: moment(),
+      events: [
+        {
+          id: 1,
+          name: "ミーティング",
+          start: "2022/10/01",
+          end: "2022/10/01",
+          color: "blue",
+        },
+        {
+          id: 2,
+          name: "イベント",
+          start: "2022/10/05",
+          end: "2022/10/05",
+          color: "limegreen",
+        },
+        {
+          id: 3,
+          name: "会議",
+          start: "2022/10/10",
+          end: "2022/10/10",
+          color: "deepskyblue",
+        },
+        {
+          id: 4,
+          name: "有給",
+          start: "2022/10/19",
+          end: "2022/10/19",
+          color: "dimgray",
+        },
+        {
+          id: 5,
+          name: "海外旅行",
+          start: "2022/10/26",
+          end: "2022/11/05",
+          color: "navy",
+        },
+        {
+          id: 6,
+          name: "誕生日",
+          start: "2022/11/08",
+          end: "2022/11/08",
+          color: "orange",
+        },
+        {
+          id: 7,
+          name: "イベント",
+          start: "2022/10/22",
+          end: "2022/10/23",
+          color: "limegreen",
+        },
+        {
+          id: 8,
+          name: "出張",
+          start: "2022/11/10",
+          end: "2022/11/13",
+          color: "teal",
+        },
+        {
+          id: 9,
+          name: "客先訪問",
+          start: "2022/11/20",
+          end: "2022/11/20",
+          color: "red",
+        },
+        {
+          id: 10,
+          name: "パーティ",
+          start: "2022/12/01",
+          end: "2022/12/01",
+          color: "royalblue",
+        },
+      ],
     };
   },
   methods: {
@@ -52,9 +132,11 @@ export default {
       for (let week = 0; week < weekNumber; week++) {
         let weekRow = [];
         for (let day = 0; day < 7; day++) {
+          let dayEvents = this.getDayEvents(calendarDate);
           weekRow.push({
             day: calendarDate.get("date"),
             month: calendarDate.format("YYYY/MM"),
+            dayEvents,
           });
           calendarDate.add(1, "days");
         }
@@ -71,6 +153,14 @@ export default {
     showDayOfWeek(dayIndex) {
       const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       return week[dayIndex];
+    },
+    getDayEvents(date) {
+      return this.events.filter((event) => {
+        let startDate = moment(event.start).format("YYYY/MM/DD");
+        let endDate = moment(event.end).format("YYYY/MM/DD");
+        let Date = date.format("YYYY/MM/DD");
+        if (startDate <= Date && endDate >= Date) return true;
+      });
     },
   },
   mounted() {
@@ -114,5 +204,11 @@ export default {
 }
 .outside {
   background-color: #f7f7f7;
+}
+.calendar-event {
+  color: white;
+  margin-bottom: 1px;
+  height: 25px;
+  line-height: 25px;
 }
 </style>
