@@ -19,7 +19,8 @@
         <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
           <div
             class="calendar-event"
-            :style="`background-color:${dayEvent.color}`"
+            :style="`width:${dayEvent.width}%;background-color:${dayEvent.color}`"
+            draggable="true"
           >
             {{ dayEvent.name }}
           </div>
@@ -106,6 +107,13 @@ export default {
           end: "2022/12/01",
           color: "royalblue",
         },
+        {
+          id: 10,
+          name: "誕生日",
+          start: "2022/12/01",
+          end: "2022/12/01",
+          color: "orange",
+        },
       ],
     };
   },
@@ -132,7 +140,7 @@ export default {
       for (let week = 0; week < weekNumber; week++) {
         let weekRow = [];
         for (let day = 0; day < 7; day++) {
-          let dayEvents = this.getDayEvents(calendarDate);
+          let dayEvents = this.getDayEvents(calendarDate, day);
           weekRow.push({
             day: calendarDate.get("date"),
             month: calendarDate.format("YYYY/MM"),
@@ -154,13 +162,31 @@ export default {
       const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       return week[dayIndex];
     },
-    getDayEvents(date) {
-      return this.events.filter((event) => {
+    getDayEvents(date, day) {
+      let dayEvents = [];
+      this.events.filter((event) => {
         let startDate = moment(event.start).format("YYYY/MM/DD");
         let endDate = moment(event.end).format("YYYY/MM/DD");
         let Date = date.format("YYYY/MM/DD");
-        if (startDate <= Date && endDate >= Date) return true;
+        if (startDate <= Date && endDate >= Date) {
+          if (startDate === Date) {
+            let width = this.getEventWidth(startDate, endDate, day);
+            dayEvents.push({ ...event, width });
+          } else if (day === 0) {
+            let width = this.getEventWidth(startDate, endDate, day);
+            dayEvents.push({ ...event, width });
+          }
+        }
       });
+      return dayEvents;
+    },
+    getEventWidth(end, start, day) {
+      let betweenDays = moment(end).diff(moment(start), "days");
+      if (betweenDays > 6 - day) {
+        return (6 - day) * 100 + 95;
+      } else {
+        return betweenDays * 100 + 95;
+      }
     },
   },
   mounted() {
