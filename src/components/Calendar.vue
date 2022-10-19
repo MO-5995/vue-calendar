@@ -164,7 +164,7 @@ export default {
     },
     getDayEvents(date, day) {
       let dayEvents = [];
-      this.events.filter((event) => {
+      this.sortedEvents.filter((event) => {
         let startDate = moment(event.start).format("YYYY/MM/DD");
         let endDate = moment(event.end).format("YYYY/MM/DD");
         let Date = date.format("YYYY/MM/DD");
@@ -201,6 +201,15 @@ export default {
     },
     currentMonth() {
       return this.currentDate.format("YYYY/MM");
+    },
+    sortedEvents() {
+      return this.events.slice().sort(function (a, b) {
+        let startDate = moment(a.start).format("YYYY/MM/DD");
+        let startDate_2 = moment(b.start).format("YYYY/MM/DD");
+        if (startDate < startDate_2) return -1;
+        if (startDate > startDate_2) return 1;
+        return 0;
+      });
     },
   },
 };
