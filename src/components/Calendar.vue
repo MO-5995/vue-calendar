@@ -18,12 +18,14 @@
         <p class="calendar-date">{{ day.day }}</p>
         <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
           <div
+            v-if="dayEvent.width"
             class="calendar-event"
             :style="`width:${dayEvent.width}%;background-color:${dayEvent.color}`"
             draggable="true"
           >
             {{ dayEvent.name }}
           </div>
+          <div v-else style="height: 26px"></div>
         </div>
       </div>
     </div>
@@ -163,18 +165,36 @@ export default {
       return week[dayIndex];
     },
     getDayEvents(date, day) {
+      let stackIndex = 0;
       let dayEvents = [];
+      let startedEvents = [];
       this.sortedEvents.filter((event) => {
         let startDate = moment(event.start).format("YYYY/MM/DD");
         let endDate = moment(event.end).format("YYYY/MM/DD");
         let Date = date.format("YYYY/MM/DD");
         if (startDate <= Date && endDate >= Date) {
           if (startDate === Date) {
-            let width = this.getEventWidth(startDate, endDate, day);
-            dayEvents.push({ ...event, width });
+            [stackIndex, dayEvents] = this.getStackEvents(
+              event,
+              day,
+              date,
+              stackIndex,
+              dayEvents,
+              startedEvents,
+              event.start
+            );
           } else if (day === 0) {
-            let width = this.getEventWidth(startDate, endDate, day);
-            dayEvents.push({ ...event, width });
+            [stackIndex, dayEvents] = this.getStackEvents(
+              event,
+              day,
+              date,
+              stackIndex,
+              dayEvents,
+              startedEvents,
+              Date
+            );
+          } else {
+            startedEvents.push(event);
           }
         }
       });
@@ -187,6 +207,33 @@ export default {
       } else {
         return betweenDays * 100 + 95;
       }
+    },
+    getStackEvents(event, day, stackIndex, dayEvents, startedEvents, start) {
+      [stackIndex, dayEvents] = this.getStartedEvents(
+        stackIndex,
+        startedEvents,
+        dayEvents
+      );
+      let width = this.getEventWidth(start, event.end, day);
+      Object.assign(event, {
+        stackIndex,
+      });
+      dayEvents.push({ ...event, width });
+      stackIndex++;
+      return [stackIndex, dayEvents];
+    },
+    getStartedEvents(stackIndex, startedEvents, dayEvents) {
+      let startedEvent;
+      do {
+        startedEvent = startedEvents.find(
+          (event) => event.stackIndex === stackIndex
+        );
+        if (startedEvent) {
+          dayEvents.push(startedEvent); //ダミー領域として利用するため
+          stackIndex++;
+        }
+      } while (typeof startedEvent !== "undefined");
+      return [stackIndex, dayEvents];
     },
   },
   mounted() {
@@ -245,5 +292,9 @@ export default {
   margin-bottom: 1px;
   height: 25px;
   line-height: 25px;
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
+  padding-left: 4px;
 }
 </style>
