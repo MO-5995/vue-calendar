@@ -22,6 +22,7 @@
             class="calendar-event"
             :style="`width:${dayEvent.width}%;background-color:${dayEvent.color}`"
             draggable="true"
+            @dragstart="dragStart($event, dayEvent.id)"
           >
             {{ dayEvent.name }}
           </div>
@@ -234,6 +235,11 @@ export default {
         }
       } while (typeof startedEvent !== "undefined");
       return [stackIndex, dayEvents];
+    },
+    dragStart(evet, eventId) {
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.dropEffect = "move";
+      event.dataTransfer.setData("eventId", eventId);
     },
   },
   mounted() {
