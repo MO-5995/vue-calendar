@@ -14,6 +14,8 @@
         v-for="(day, index) in week"
         :key="index"
         class="calendar-day"
+        @drop="dragEnd"
+        @dragover.prevent
       >
         <p class="calendar-date">{{ day.day }}</p>
         <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
@@ -235,6 +237,9 @@ export default {
         }
       } while (typeof startedEvent !== "undefined");
       return [stackIndex, dayEvents];
+    },
+    dragEnd() {
+      console.log(event.dataTransfer.getData("eventId"));
     },
     dragStart(evet, eventId) {
       event.dataTransfer.effectAllowed = "move";
